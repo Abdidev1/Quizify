@@ -10,7 +10,7 @@ const QUIZ_TIME_LIMIT = 15;
 let currentTime = QUIZ_TIME_LIMIT;
 let timer = null;
 let quizCategory = "programming";
-let numberOfQuestions = 10;
+let numberOfQuestions = 5;
 let currentQuestion = null;
 const questionsIndexHistory = [];
 let correctAnswerCount = 0;
@@ -38,6 +38,7 @@ const startTimer = () => {
             clearInterval(timer);
             highlightCorrectAnswer();
             nextQuestionBtn.style.visibility = "visible";
+            quizContainer.querySelector(".quiz-timer").style.background = '#c31402';
 
             answerOptions.querySelectorAll(".answer-option").forEach(option => option.style.pointerEvents = "none");
         }
@@ -91,6 +92,7 @@ const renderQuestion = () => {
     
     answerOptions.innerHTML = "";
     nextQuestionBtn.style.visibility = "hidden";
+    quizContainer.querySelector(".quiz-timer").style.background = '#32313C'
     document.querySelector(".question-text").textContent = currentQuestion.question;
     questionStatus.innerHTML = `<b>${questionsIndexHistory.length}</b> of <b>${numberOfQuestions}</b> Questions`;
 
@@ -106,6 +108,9 @@ const renderQuestion = () => {
 const startQuiz = () => {
     configContainer.style.display = "none";
     quizContainer.style.display = "block";
+
+    quizCategory = configContainer.querySelector(".category-option.active").textContent.trim().toLowerCase();
+    numberOfQuestions = parseInt(configContainer.querySelector(".question-option.active").textContent);
 
     renderQuestion();
 }
