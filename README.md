@@ -15,8 +15,8 @@
  * Javascript: handles all core application logic including dynamic question indexing, interval timers,  click state management, and a realtime DOM manipulation.
 
 ## How to contribute:
- 1. Fork this repository to your own account.
- 2. Clone your fork locally and create a new feature branch (git checkout -b feature-name).
- 3. Make your changes (e.g., adding cool new CSS styles to style.css, writing new logic features in script.js, or expanding categories inside questions.js).
- 4. Commit your work with a clear message and push it to your branch.
+ 1. Fork this repository by clicking fork at top-right.
+ 2. Clone your fork locally and create a feature branch (git checkout -b feature-name).
+ 3. Make your changes.
+ 4. Commit your work and push it to branch
  5. Open a Pull Request right here on GitHub so I can review and merge your updates!
