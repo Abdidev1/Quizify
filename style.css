@@ -24,10 +24,12 @@ body {
 }
 
 .config-container {
-    display: none;
+    display: block;
     width: 415px;
     padding: 25px;
     text-align: center;
+    position: relative;
+    z-index: 10;
 }
 
 .config-container .config-title {
@@ -48,6 +50,8 @@ body {
     display: grid;
     gap: 15px;
     grid-template-columns: repeat(2, 1fr);
+    position: relative;
+    z-index: 20;
 }
 
 .config-option .question-options {
@@ -67,6 +71,8 @@ body {
     cursor: pointer;
     border: 1px solid #9B8FFF;
     transition: 0.3s ease;
+    position: relative;
+    z-index: 30;
 }
 
 .config-option button.active {
@@ -110,8 +116,9 @@ body {
 }
 
 .quiz-container {
-    display: block;
     width: 480px;
+    position: relative;
+    z-index: 5;
 }
 
 .quiz-container .quiz-header {

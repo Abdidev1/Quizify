@@ -1,44 +1,75 @@
-const answerOptions = document.querySelector(".answer-options");
+const configContainer = document.querySelector(".config-container");
+const quizContainer = document.querySelector(".quiz-container");
+const answerOptions = document.querySelector(".answer-options")
 const nextQuestionBtn = document.querySelector(".next-question-btn");
 const questionStatus = document.querySelector(".question-status");
+const timerDisplay = document.querySelector(".time-duration");
+const resultContainer = document.querySelector(".result-container");
 
 const QUIZ_TIME_LIMIT = 15;
 let currentTime = QUIZ_TIME_LIMIT;
 let timer = null;
 let quizCategory = "programming";
-let numberOfQuestions = 5;
+let numberOfQuestions = 10;
 let currentQuestion = null;
 const questionsIndexHistory = [];
+let correctAnswerCount = 0;
+
+const showQuizResult = () => {
+    quizContainer.style.display = "none";
+    resultContainer.style.display = "block";
+
+    const resultText = `You answered <b>${correctAnswerCount}</b> out of <b>${numberOfQuestions}</b> questions correctly. Great effort!`;
+    document.querySelector(".result-message").innerHTML = resultText;
+}
+
+const resetTimer = () => {
+    clearInterval(timer);
+    currentTime = QUIZ_TIME_LIMIT;
+    timerDisplay.textContent = `${currentTime}s`;
+}
 
 const startTimer = () => {
+    timer = setInterval(() => {
+        currentTime--;
+        timerDisplay.textContent = `${currentTime}s`;
 
+        if(currentTime <= 0) {
+            clearInterval(timer);
+            highlightCorrectAnswer();
+            nextQuestionBtn.style.visibility = "visible";
+
+            answerOptions.querySelectorAll(".answer-option").forEach(option => option.style.pointerEvents = "none");
+        }
+    }, 1000);
 }
 
 const getRandomQuestion = () => {
-    const categoryQuestions = questions.find(cat => cat.category.toLowerCase() === quizCategory.toLowerCase()).questions || [];
+    const categoryData = questions.find(cat => cat.category.toLowerCase() === quizCategory);
+    const categoryQuestions = categoryData ? categoryData.questions : [];
 
-    if(questionsIndexHistory.length >= Math.min(categoryQuestions.length, numberOfQuestions)) {
-        return console.log("Quiz Completed!");
+    const availableQuestions = categoryQuestions.filter((_, index) => !questionsIndexHistory.includes(index));
+    const randomQuestion = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+
+    if (randomQuestion) {
+        questionsIndexHistory.push(categoryQuestions.indexOf(randomQuestion));
     }
-
-    const availableQuestion = categoryQuestions.filter((_, index) => !questionsIndexHistory.includes(index));
-    const RandomQuestion = availableQuestion[Math.floor(Math.random() * categoryQuestions.length)];
-
-    questionsIndexHistory.push(categoryQuestions.indexOf(RandomQuestion));
-    return RandomQuestion;
+    return randomQuestion;
 }
 
 const highlightCorrectAnswer = () => {
     const CorrectOption = answerOptions.querySelectorAll(".answer-option")[currentQuestion.correctAnswer];
     CorrectOption.classList.add("correct");
-    const iconHTML = `<span class="material-symbols-rounded">check_circle</span`;
+    const iconHTML = `<span class="material-symbols-rounded">check_circle</span>`;
     CorrectOption.insertAdjacentHTML("beforeend", iconHTML);
 }
 
 const handleAnswer = (option, answerIndex) => {
+    clearInterval(timer);
+
     const isCorrect = currentQuestion.correctAnswer === answerIndex;
     option.classList.add(isCorrect ? 'correct' : 'incorrect');
-    !isCorrect ? highlightCorrectAnswer() : "";
+    !isCorrect ? highlightCorrectAnswer() : correctAnswerCount++;
 
     const iconHTML = `<span class="material-symbols-rounded">${isCorrect ? 'check_circle' : 'cancel'}</span>`;
     option.insertAdjacentHTML("beforeend", iconHTML);
@@ -49,9 +80,14 @@ const handleAnswer = (option, answerIndex) => {
 }
 
 const renderQuestion = () => {
+    if (questionsIndexHistory.length >= numberOfQuestions) {
+        showQuizResult();
+        return;
+    }
     currentQuestion = getRandomQuestion();
-    if(!currentQuestion) return;
-    console.log(currentQuestion);
+    if (!currentQuestion) return;
+    resetTimer();
+    startTimer();
     
     answerOptions.innerHTML = "";
     nextQuestionBtn.style.visibility = "hidden";
@@ -67,6 +103,39 @@ const renderQuestion = () => {
     });
 }
 
-renderQuestion();
+const startQuiz = () => {
+    configContainer.style.display = "none";
+    quizContainer.style.display = "block";
+
+    renderQuestion();
+}
+
+document.querySelectorAll(".category-option").forEach(option => {
+    option.addEventListener("click", () => {
+        option.parentNode.querySelector(".active").classList.remove("active");
+        option.classList.add("active");
+        quizCategory = option.textContent.trim().toLowerCase();
+    });
+});
+
+
+document.querySelectorAll(".question-option").forEach(option => {
+    option.addEventListener("click", () => {
+        option.parentNode.querySelector(".active").classList.remove("active");
+        option.classList.add("active");
+        numberOfQuestions = parseInt(option.textContent.trim());
+    });
+});
+
+const resetQuiz = () => {
+    resetTimer();
+    correctAnswerCount = 0;
+    questionsIndexHistory.length = 0;
+    configContainer.style.display = "block";
+    resultContainer.style.display = "none";
+}
+
 
 nextQuestionBtn.addEventListener("click", renderQuestion);
+document.querySelector(".try-again-btn").addEventListener("click", resetQuiz);
+document.querySelector(".start-quiz-btn").addEventListener("click", startQuiz);
