@@ -24,7 +24,7 @@ body {
 }
 
 .config-container {
-    display: block;
+    display: none;
     width: 415px;
     padding: 25px;
     text-align: center;
@@ -58,7 +58,7 @@ body {
     justify-content: center;
 }
 
-.config-option {
+.config-option button {
     padding: 12px;
     font-size: 0.938rem;
     font-weight: 500;
@@ -211,6 +211,7 @@ body {
 .quiz-footer .next-question-btn {
     display: inline-flex;
     gap: 5px;
+    visibility: hidden;
     align-items: center;
     padding: 9px 17px;
 }
